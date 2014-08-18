@@ -14,11 +14,7 @@ var stringifyJSON = function(obj) {
     // is an array
     var unclosedArray = _.reduce(obj, function(memo, val, index, list) {
       var stringifiedValue = stringifyJSON(val);
-      if (stringifiedValue === '') {
-        return memo;
-      } else {
-        return memo += stringifyJSON(val) + ',';  
-      }
+      return stringifiedValue === '' ? memo : memo += stringifyJSON(val) + ',';
     }, '[');
     if (unclosedArray.charAt(unclosedArray.length - 1) === ',') {
       unclosedArray = unclosedArray.slice(0, -1);
@@ -28,11 +24,7 @@ var stringifyJSON = function(obj) {
     // is an object
     var unclosedObject = _.reduce(obj, function(memo, val, key, list) {
       var stringifiedValue = stringifyJSON(val);
-      if (stringifiedValue === '') {
-        return memo;
-      } else {
-        return memo += stringifyJSON(key) + ':' + stringifyJSON(val) + ',';
-      }
+      return stringifiedValue === '' ? memo : memo += stringifyJSON(key) + ':' + stringifyJSON(val) + ',';
     }, '{');
     if (unclosedObject.charAt(unclosedObject.length - 1) === ',') {
       unclosedObject = unclosedObject.slice(0, -1);
