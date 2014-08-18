@@ -6,23 +6,39 @@ var stringifyJSON = function(obj) {
   // your code goes here
   if (obj === null) {
     return 'null';
+  } else if (typeof obj === 'undefined' || typeof obj === 'function') {
+    return '';
   } else if (typeof obj === 'string') {
     return '\"' + obj + '\"';
   } else if (Array.isArray(obj)) {
     // is an array
+    var unclosedArray = _.reduce(obj, function(memo, val, index, list) {
+      var stringifiedValue = stringifyJSON(val);
+      if (stringifiedValue === '') {
+        return memo;
+      } else {
+        return memo += stringifyJSON(val) + ',';  
+      }
+    }, '[');
+    if (unclosedArray.charAt(unclosedArray.length - 1) === ',') {
+      unclosedArray = unclosedArray.slice(0, -1);
+    }
+    return unclosedArray + ']';
   } else if (typeof obj === 'object') {
     // is an object
+    var unclosedObject = _.reduce(obj, function(memo, val, key, list) {
+      var stringifiedValue = stringifyJSON(val);
+      if (stringifiedValue === '') {
+        return memo;
+      } else {
+        return memo += stringifyJSON(key) + ':' + stringifyJSON(val) + ',';
+      }
+    }, '{');
+    if (unclosedObject.charAt(unclosedObject.length - 1) === ',') {
+      unclosedObject = unclosedObject.slice(0, -1);
+    }
+    return unclosedObject + '}';
   } else {
     return new String(obj).toString();
   }
-
-  return _.reduce(obj, function(memo, val, key, list) {
-    if (Array.isArray(val)) {
-      // is an array
-    } else if (typeof val === 'object') {
-      // is an object
-    } else {
-      return memo += val;
-    }
-  }, '');
 };
